@@ -18,11 +18,8 @@ const DUMMY_DATA = [
 // const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
 const MESSAGES_ENDPOINT = "localhost"
 
-
-
 function Recomenadation(props) {
   const recommendations = props.message.recommendations
-  const hasRecommendations = false
 
   const [img, setImg] = useState()
   const [index, setIndex] = useState(0)
@@ -37,8 +34,6 @@ function Recomenadation(props) {
   }
 
   var click = (dir) => {
-    // console.log("çlkjnlsdfjkhgbklujdfgv")
-    //  clamp(index + (dir * 1), 0, recommendations.length - 1)
     setIndex(clamp(index + (dir * 1), 0, recommendations.length - 1))
   }
 
