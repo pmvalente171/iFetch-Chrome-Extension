@@ -1,7 +1,15 @@
 /*global chrome*/
+<<<<<<< HEAD
 import './App.css'
 import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, ScrollView, SafeAreaView, StatusBar, View, Text } from 'react-native';
+=======
+import logo from './logo.svg'
+import './App.css'
+import React, { useState, useEffect, useRef } from 'react'
+import { StyleSheet, ScrollView, SafeAreaView, StatusBar, View, Text } from 'react-native';
+// import {useSettingsStore} from '../common/settings'
+>>>>>>> master
 
 
 const DUMMY_DATA = [
@@ -15,10 +23,16 @@ const DUMMY_DATA = [
   }
 ]
 
+<<<<<<< HEAD
 // const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
 const MESSAGES_ENDPOINT = "localhost"
 
 // Function that represents a recommendation
+=======
+const IMAGES_ENDPOINT = "https://large.novasearch.org/farfetch_products/images/"
+const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
+
+>>>>>>> master
 function Recomenadation(props) {
   const recommendations = props.message.recommendations
   const hasRecommendations = false
@@ -35,6 +49,19 @@ function Recomenadation(props) {
     return imageObjectURL
   }
 
+<<<<<<< HEAD
+=======
+  // useEffect(() => {
+  //   fetchImage(0)
+  // })
+
+  // console.log(props.message)
+  // if (recommendations.length != 0) {
+  //   fetchImage(recommendations[0].image_path)
+  //   hasRecommendations = true
+  // }
+
+>>>>>>> master
   var click = (dir) => {
     // console.log("çlkjnlsdfjkhgbklujdfgv")
     //  clamp(index + (dir * 1), 0, recommendations.length - 1)
@@ -54,7 +81,10 @@ function Recomenadation(props) {
   )
 }
 
+<<<<<<< HEAD
 // function for printing a message
+=======
+>>>>>>> master
 function Message(props) {
   const ref = useRef()
 
@@ -81,7 +111,10 @@ function Message(props) {
   )
 }
 
+<<<<<<< HEAD
 // Fnction responsible for printing all the messages
+=======
+>>>>>>> master
 function Messages(props) {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1}}>
@@ -96,12 +129,20 @@ function Messages(props) {
   )
 }
 
+<<<<<<< HEAD
 // Function that sends a message form
+=======
+>>>>>>> master
 function SendMessageForm (props) {
   const [message, setMessage] = useState("")
   
   var handleChange = (e) => {
+<<<<<<< HEAD
     setMessage(e.target.value)
+=======
+    setMessage(e.target.value) // TODO: Fix this!!!
+    // props.handleChange(value)
+>>>>>>> master
   }
 
   const handleSubmit = (e) => {
@@ -123,8 +164,11 @@ function SendMessageForm (props) {
   )
 }
 
+<<<<<<< HEAD
 // Function responsible for sending 
 //  a message to the backend
+=======
+>>>>>>> master
 async function SendMessage (
   utterance, userId, sessionId,
   userAction, selectedId, 
@@ -154,9 +198,14 @@ async function SendMessage (
     return response
 }
 
+<<<<<<< HEAD
 // Function that gets a random value between 
 //  min and max
 function randomNumberInRange(min, max) {
+=======
+function randomNumberInRange(min, max) {
+  // 👇️ get number between min (inclusive) and max (inclusive)
+>>>>>>> master
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
