@@ -17,7 +17,7 @@ To install the extension, follow these steps:
 
 To use the iFetch Chrome Extension, follow these steps:
 
-1. Open the page of an item in the Farfetch store.
+1. Open the page of an item in the [Farfetch store](https://www.farfetch.com/pt/shopping/men/items.aspx).
 1. Click on the icon of the iFetch Chrome Extension, which will open a chat window.
 1. Interact with the chatbot to ask questions or get more information about the item.
 
