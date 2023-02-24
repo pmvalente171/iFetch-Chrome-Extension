@@ -1,4 +1,4 @@
-# iFetch Chrome Extension Readme
+# iFetch Chrome Extension
 
 The iFetch Chrome Extension is a project that integrates the iFetch conversational agent into the Farfetch store, allowing users to interact with a chatbot while browsing the store's items.
 
