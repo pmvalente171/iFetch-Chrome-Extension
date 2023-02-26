@@ -180,15 +180,13 @@ function App() {
             currentTabId,
             message,
             (response) => {
-                // setResponseFromContent(response);
                 console.log(response)
             });
       });
   };
 
   const handleSubmit = (message) => {
-    // if (!hasResponded) return
-    // console.log(settings)
+    // if (!hasResponded) return // safety code
     const temp = {
       provider_id : "user",
       utterance : message,
@@ -200,7 +198,7 @@ function App() {
   }
 
   const recieveMessage = (message, utterance, isUpToDate=false) => {
-    // if (!message.has_response) return
+    // if (!message.has_response) return // safety code
     
     const temp1 = {
       provider_id : "iFetch",
@@ -220,7 +218,6 @@ function App() {
     }
 
     setMessages([...messages, temp2, temp1])
-    // console.log(messages)
   }
 
   useEffect(() => {
