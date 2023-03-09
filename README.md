@@ -39,7 +39,8 @@ To send a message with your content, you need to receive messages in the followi
   user_id : userId, 
   session_id: sessionId,
   user_action: userAction,
-  interface_selected_product_id: selectedId 
+  interface_selected_product_id: selectedId,
+  image: image
 }
 ```
 

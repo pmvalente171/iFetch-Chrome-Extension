@@ -15,8 +15,8 @@ const DUMMY_DATA = [
   }
 ]
 
-const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
-// const MESSAGES_ENDPOINT = "localhost:4000"
+// const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
+const MESSAGES_ENDPOINT = "localhost:4000"
 
 function Recomenadation(props) {
   const recommendations = props.message.recommendations

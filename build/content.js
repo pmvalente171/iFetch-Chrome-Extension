@@ -1,5 +1,5 @@
-const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
-// const MESSAGES_ENDPOINT = "localhost"
+// const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
+const MESSAGES_ENDPOINT = "localhost:4000"
 
 // Uncomment 'document' field to access the full html
 //  document of th store.
