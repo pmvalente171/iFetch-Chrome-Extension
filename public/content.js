@@ -1,7 +1,8 @@
+const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
+// const MESSAGES_ENDPOINT = "localhost"
 
-// const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
-const MESSAGES_ENDPOINT = "localhost"
-
+// Uncomment 'document' field to access the full html
+//  document of th store.
 const SendMessage = async (
     utterance, userId, sessionId,
     userAction, selectedId, 
@@ -45,12 +46,12 @@ const messagesFromReactAppListener = (message, sender, response) => {
         const match = elements.find(el => {
             return el.textContent.toLowerCase().includes(text.toLowerCase());
         });
-        const productID = match.innerText.slice(13)
+        const productID = match.innerText.slice(13) // The id of the opened item
 
         // Get the id from the DOM 
         //  and select it in the backend
         SendMessage("", message.uID, message.sID, 
-            "select", productID, (data, utterance, isUpToDate) => { // 18534514
+            "select", productID, (data, utterance, isUpToDate) => {
             }, false)
         
     }
@@ -58,3 +59,29 @@ const messagesFromReactAppListener = (message, sender, response) => {
 
 // Fired when a message is sent from either an extension process or a content script.
 chrome.runtime.onMessage.addListener(messagesFromReactAppListener);
+
+
+// Edit the DOM of the page in a way that lets you add the chat 
+//  into the window. 
+const cssContent = `
+  position: fixed;
+  bottom: 23px;
+  right: 28px;
+  width: 404px;
+  height: 500px;
+  z-index: 10;
+  background: white;
+`
+
+const myIFrame = `
+  <iframe src="${chrome.runtime.getURL('index.html')}" 
+    style="
+      width: inherit;
+      height: inherit;
+    ">
+  </iframe>
+`
+let div = document.createElement('div')
+div.style.cssText = cssContent
+div.innerHTML = myIFrame
+document.body.insertBefore(div, document.body.firstChild)

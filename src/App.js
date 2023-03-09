@@ -1,5 +1,6 @@
 /*global chrome*/
 import './App.css'
+import UploadAndDisplayImage from './UploadAndDisplayImage';
 import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, ScrollView, SafeAreaView, StatusBar, View, Text } from 'react-native';
 
@@ -15,8 +16,8 @@ const DUMMY_DATA = [
   }
 ]
 
-// const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
-const MESSAGES_ENDPOINT = "localhost"
+const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
+// const MESSAGES_ENDPOINT = "localhost"
 
 function Recomenadation(props) {
   const recommendations = props.message.recommendations
@@ -158,12 +159,16 @@ function randomNumberInRange(min, max) {
 
 function App() {
   const [messages, setMessages] = useState([])
+  const [showContent, setShowContent] = useState(true)
   const [userID, setUserID] = useState(`${randomNumberInRange(0, 10000)}`)
   const [sessionID, setSessionID] = useState(`${randomNumberInRange(0, 10000)}`)
 
+  const setChatbox = () => {
+    setShowContent(!showContent)
+  }
+
   const sendTestMessage = () => {
     const message = {
-        // from: Sender.React,
         message: "Hello from React",
         uID: userID,
         sID: sessionID
@@ -183,6 +188,7 @@ function App() {
                 console.log(response)
             });
       });
+      
   };
 
   const handleSubmit = (message) => {
@@ -223,6 +229,7 @@ function App() {
   useEffect(() => {
     const response = SendMessage("Hi!", userID, sessionID, "", "", recieveMessage, true)
     sendTestMessage()
+    
   }, [])
 
   return (

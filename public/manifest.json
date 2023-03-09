@@ -1,7 +1,7 @@
 {
     "name" : "iFetch Store Extension",
     "version" : "1.0.0",
-    "description" : "Latest verion of the iFetch chat-bot in a versiuon of an Extension",
+    "description" : "Latest verion of the iFetch chat-bot in a version of an Extension",
     "permissions" : ["storage", "tabs"],
     "manifest_version": 3,
     "content_scripts": [
@@ -25,6 +25,12 @@
       "16": "logo192.png",
       "48": "logo192.png",
       "128": "logo192.png"
-    }
+    },
+    "web_accessible_resources": [
+        {
+          "resources": [ "index.html", "Window.css" ],
+          "matches": ["<all_urls>"]
+        }
+    ]
 }
   
