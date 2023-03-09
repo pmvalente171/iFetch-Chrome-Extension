@@ -13,9 +13,10 @@ const SendMessage = async (
       body: JSON.stringify({
         utterance : utterance, // The users utterance
         user_id : userId, // The users ID 
-        session_id: sessionId, // The current session ID
-        user_action: userAction, // The users action
+        session_id : sessionId, // The current session ID
+        user_action : userAction, // The users action
         interface_selected_product_id: selectedId, // the ID of the opened product
+        image : null
         // document: document // The HTML of the page
       }),
       headers: {
@@ -68,7 +69,7 @@ const cssContent = `
   bottom: 23px;
   right: 28px;
   width: 404px;
-  height: 500px;
+  height: 520px;
   z-index: 10;
   background: white;
 `

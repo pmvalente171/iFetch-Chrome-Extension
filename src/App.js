@@ -1,8 +1,7 @@
 /*global chrome*/
 import './App.css'
-import UploadAndDisplayImage from './UploadAndDisplayImage';
 import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, ScrollView, SafeAreaView, StatusBar, View, Text } from 'react-native';
+import { StyleSheet, ScrollView, View } from 'react-native';
 
 
 const DUMMY_DATA = [
@@ -17,7 +16,7 @@ const DUMMY_DATA = [
 ]
 
 const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
-// const MESSAGES_ENDPOINT = "localhost"
+// const MESSAGES_ENDPOINT = "localhost:4000"
 
 function Recomenadation(props) {
   const recommendations = props.message.recommendations
@@ -26,6 +25,7 @@ function Recomenadation(props) {
   const [index, setIndex] = useState(0)
 
   const clamp = (num, min, max) => Math.min(Math.max(num, min), max)
+
   const fetchImage = async (imageUrl) => {
     const res = await fetch(imageUrl)
     const imageBlob = await res.blob()
@@ -125,16 +125,18 @@ function SendMessageForm (props) {
 async function SendMessage (
   utterance, userId, sessionId,
   userAction, selectedId, 
-  respondeCallback, isUpToDate=false) {
+  respondeCallback, image=null, isUpToDate=false) {
 
   const response = await fetch(MESSAGES_ENDPOINT, {
     method: "POST",
     body: JSON.stringify({
-      utterance : utterance,
-      user_id : userId, // TODO: Randomize
-      session_id: sessionId, // TODO: Randomize
-      user_action: userAction,
-      interface_selected_product_id: selectedId 
+      utterance : utterance, // The users utterance
+      user_id : userId, // The users ID 
+      session_id : sessionId, // The current session ID
+      user_action : userAction, // The users action
+      interface_selected_product_id : selectedId, // the ID of the opened product
+      file : image, // the image uploaded by the user
+      // document: document // The HTML of the page
     }),
     headers: {
       "Content-type": "application/json"
@@ -162,12 +164,14 @@ function App() {
   const [showContent, setShowContent] = useState(true)
   const [userID, setUserID] = useState(`${randomNumberInRange(0, 10000)}`)
   const [sessionID, setSessionID] = useState(`${randomNumberInRange(0, 10000)}`)
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [selectedFile, setSelectedFile] = useState(null)
 
   const setChatbox = () => {
     setShowContent(!showContent)
   }
 
-  const sendTestMessage = () => {
+  const initialMessage = () => {
     const message = {
         message: "Hello from React",
         uID: userID,
@@ -193,6 +197,7 @@ function App() {
 
   const handleSubmit = (message) => {
     // if (!hasResponded) return // safety code
+
     const temp = {
       provider_id : "user",
       utterance : message,
@@ -200,7 +205,9 @@ function App() {
     }
 
     setMessages([...messages, temp])
-    SendMessage(message, userID, sessionID, "", "", recieveMessage)
+    SendMessage(message, userID, sessionID, "", "", recieveMessage, selectedImage)
+    setSelectedImage(null)
+    setSelectedFile(null)
   }
 
   const recieveMessage = (message, utterance, isUpToDate=false) => {
@@ -227,10 +234,21 @@ function App() {
   }
 
   useEffect(() => {
-    const response = SendMessage("Hi!", userID, sessionID, "", "", recieveMessage, true)
-    sendTestMessage()
-    
+    const response = SendMessage("Hi!", userID, sessionID, "", "", recieveMessage, null, true)
+    initialMessage()
   }, [])
+  
+  const selectFileHandler = event => {
+    console.log(event.target.files[0])
+    let reader = new FileReader()
+
+    reader.readAsDataURL(event.target.files[0])
+    setSelectedFile(event.target.files[0])
+    
+    reader.onload = () => {      
+     setSelectedImage(reader.result)
+    }
+  }
 
   return (
     <div className='chat-container'>
@@ -242,6 +260,15 @@ function App() {
       </View>
       <div className='form-container'>
         <SendMessageForm handleSubmit = {handleSubmit}/>
+        <input 
+          className= 'image-input' 
+          type='file' 
+          id='file' 
+          name="file"
+          placeholder="Upload an Image" 
+          required
+          onChange={selectFileHandler} 
+        />
       </div>
     </div>
   );
