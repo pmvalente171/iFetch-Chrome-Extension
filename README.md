@@ -31,19 +31,40 @@ The first step is to change the endpoint used by the project. To do this, you ne
 
 ### Send Messages
 
-To send a message with your content, you need to receive messages in the following JSON format:
+The messages are sent to the backend with the following JSON format:
 
 ```yaml
 {
-  utterance : utterance,
-  user_id : userId, 
-  session_id: sessionId,
-  user_action: userAction,
-  interface_selected_product_id: selectedId,
-  image: image
+  utterance : string,
+  user_id : string, 
+  session_id : string,
+  user_action : string,
+  interface_selected_product_id: string,
+  image: base64 byte dump
 }
 ```
 
 The `utterance` field contains the message to be sent, the `user_id` field contains the unique identifier for the user, the `session_id` field contains the unique identifier for the session, the `user_action` field contains the action taken by the user, and the `interface_selected_product_id` field contains the identifier of the selected product. After making this changes you have to build the project using `npm` or `yarn`, and running the command `yarn run build`.
+
+The interface expects responses in the following JSON format:
+
+```yaml
+{
+  has_response : bool,
+  recommendations : List<Recommendations>,
+  response : string,
+  system_action : string
+}
+```
+Where recommendations are presented in the following JSON format:
+
+```yaml
+{
+  brand : string,
+  description : string,
+  id : int,
+  image_path : string
+}
+```
 
 Thank you for using the iFetch Chrome Extension! If you have any questions or feedback, please feel free to contact us.
