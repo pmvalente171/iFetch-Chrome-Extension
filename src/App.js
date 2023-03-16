@@ -3,7 +3,6 @@ import './App.css'
 import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, ScrollView, View } from 'react-native';
 
-
 const DUMMY_DATA = [
   {
     provider_id : "user",
@@ -236,6 +235,7 @@ function App() {
   useEffect(() => {
     const response = SendMessage("Hi!", userID, sessionID, "", "", recieveMessage, null, true)
     initialMessage()
+
   }, [])
   
   const selectFileHandler = event => {
