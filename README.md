@@ -40,7 +40,7 @@ The messages are sent to the backend with the following JSON format:
   session_id : string,
   user_action : string,
   interface_selected_product_id: string,
-  image: base64 byte dump
+  file: image in base64 byte dump
 }
 ```
 
