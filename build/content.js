@@ -1,5 +1,7 @@
+
+
 // const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
-const MESSAGES_ENDPOINT = "localhost:4000"
+const MESSAGES_ENDPOINT = "http://localhost:4000"
 
 // Uncomment 'document' field to access the full html
 //  document of th store.
@@ -59,8 +61,7 @@ const messagesFromReactAppListener = (message, sender, response) => {
 }
 
 // Fired when a message is sent from either an extension process or a content script.
-chrome.runtime.onMessage.addListener(messagesFromReactAppListener);
-
+chrome.runtime.onMessage.addListener(messagesFromReactAppListener)
 
 // Edit the DOM of the page in a way that lets you add the chat 
 //  into the window. 

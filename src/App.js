@@ -3,7 +3,6 @@ import './App.css'
 import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, ScrollView, View } from 'react-native';
 
-
 const DUMMY_DATA = [
   {
     provider_id : "user",
@@ -16,7 +15,7 @@ const DUMMY_DATA = [
 ]
 
 // const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
-const MESSAGES_ENDPOINT = "localhost:4000"
+const MESSAGES_ENDPOINT = "http://localhost:4000"
 
 function Recomenadation(props) {
   const recommendations = props.message.recommendations
@@ -236,6 +235,7 @@ function App() {
   useEffect(() => {
     const response = SendMessage("Hi!", userID, sessionID, "", "", recieveMessage, null, true)
     initialMessage()
+
   }, [])
   
   const selectFileHandler = event => {
