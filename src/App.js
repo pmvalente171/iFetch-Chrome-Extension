@@ -23,6 +23,7 @@ function Recomenadation(props) {
 
   const [img, setImg] = useState()
   const [index, setIndex] = useState(0)
+  const message = recommendations[index].message
 
   const clamp = (num, min, max) => Math.min(Math.max(num, min), max)
 
@@ -39,14 +40,21 @@ function Recomenadation(props) {
   }
 
   return (
+    <div className='response'>
+    <div className={props.is_user ? 'message-content-user' : 'message-content-bot'}>
+        {message}
+    </div>
     <div className='landscape-view'>
       <button className={index == 0 ? "invisible-button" : "regular-arrows"} onClick={() =>{
         click(-1)
       }}>{"<"}</button>
-      <img src={(recommendations[index].image_path)} style={{ alignSelf: 'center' }} />
+      <img src={recommendations[index].image_path} onClick={() => {
+        window.open(recommendations[index].product_url)
+      }}  style={{ alignSelf: 'center' }}  /> 
       <button className={index == recommendations.length - 1 ? "invisible-button" : "regular-arrows"} onClick={() =>{
         click(1)
       }}>{">"}</button>
+    </div>
     </div>
   )
 }
@@ -70,7 +78,7 @@ function Message(props) {
       <div className={is_user ? 'message-content-user' : 'message-content-bot'}>
         {message.utterance}
       </div>
-      {recommendations.length != 0 ? <Recomenadation message = {message}/> : <></>}
+      {recommendations.length != 0 ? <Recomenadation message = {message} is_user={is_user}/> : <></>}
       <div className={is_user ? 'message-timestamp-user' : 'message-timestamp-bot'}>
         {message.provider_id}
       </div>
@@ -96,32 +104,6 @@ function Messages(props) {
 // Function that sends a message form
 function SendMessageForm (props) {
   const [message, setMessage] = useState("")
-  const [userMessages, setUserMessages] = useState([])
-  const [indexMessage, setIndexMessage] = useState(0)
-
-  document.onkeydown = function (e) {
-    if (e.key === 'ArrowUp' && document.activeElement.className === "text-form") {
-      setIndexMessage(indexMessage + 1)
-      getPreviousMessage()
-    }
-    if (e.key === 'ArrowDown' && document.activeElement.className === "text-form") {
-      setIndexMessage(indexMessage - 1)
-      getPreviousMessage()
-    }
-  };
-
-  const getPreviousMessage = () => {
-    if (indexMessage >= userMessages.length ) {
-      setIndexMessage( userMessages.length  - 1)
-      return
-    }
-    if (indexMessage < 0 || userMessages.length == 0) {
-      setIndexMessage(0)
-      return
-    }
-    const previousMessage = userMessages[userMessages.length - indexMessage - 1]
-    setMessage(previousMessage)
-  }
   
   var handleChange = (e) => {
     setMessage(e.target.value)
