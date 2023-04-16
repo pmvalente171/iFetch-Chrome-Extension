@@ -3,6 +3,7 @@ import './App.css'
 import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, ScrollView, View } from 'react-native';
 
+
 const DUMMY_DATA = [
   {
     provider_id : "user",
@@ -15,13 +16,14 @@ const DUMMY_DATA = [
 ]
 
 // const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
-const MESSAGES_ENDPOINT = "http://localhost:4000"
+const MESSAGES_ENDPOINT = "localhost:4000"
 
 function Recomenadation(props) {
   const recommendations = props.message.recommendations
 
   const [img, setImg] = useState()
   const [index, setIndex] = useState(0)
+  const message = recommendations[index].message
 
   const clamp = (num, min, max) => Math.min(Math.max(num, min), max)
 
@@ -38,14 +40,21 @@ function Recomenadation(props) {
   }
 
   return (
+    <div className='response'>
+    <div className={props.is_user ? 'message-content-user' : 'message-content-bot'}>
+        {message}
+    </div>
     <div className='landscape-view'>
       <button className={index == 0 ? "invisible-button" : "regular-arrows"} onClick={() =>{
         click(-1)
       }}>{"<"}</button>
-      <img src={(recommendations[index].image_path)} style={{ alignSelf: 'center' }} />
+      <img src={recommendations[index].image_path} onClick={() => {
+        window.open(recommendations[index].product_url)
+      }}  style={{ alignSelf: 'center' }}  /> 
       <button className={index == recommendations.length - 1 ? "invisible-button" : "regular-arrows"} onClick={() =>{
         click(1)
       }}>{">"}</button>
+    </div>
     </div>
   )
 }
@@ -69,7 +78,7 @@ function Message(props) {
       <div className={is_user ? 'message-content-user' : 'message-content-bot'}>
         {message.utterance}
       </div>
-      {recommendations.length != 0 ? <Recomenadation message = {message}/> : <></>}
+      {recommendations.length != 0 ? <Recomenadation message = {message} is_user={is_user}/> : <></>}
       <div className={is_user ? 'message-timestamp-user' : 'message-timestamp-bot'}>
         {message.provider_id}
       </div>
@@ -235,7 +244,6 @@ function App() {
   useEffect(() => {
     const response = SendMessage("Hi!", userID, sessionID, "", "", recieveMessage, null, true)
     initialMessage()
-
   }, [])
   
   const selectFileHandler = event => {
