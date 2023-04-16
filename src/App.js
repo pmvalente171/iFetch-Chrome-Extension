@@ -4,19 +4,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, ScrollView, View } from 'react-native';
 
 
-const DUMMY_DATA = [
-  {
-    provider_id : "user",
-    utterance : "Hi!"
-  },
-  {
-    provider_id : "iFetch",
-    utterance : "Hi! My name is iFetch, how can I help you?"
-  }
-]
-
 // const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
 const MESSAGES_ENDPOINT = "localhost:4000"
+// Idea have an aditional hash field contaioning the user id
+// we already have user ID field, so it makes sense just printing
+// Have the session id not be public
 
 function Recomenadation(props) {
   const recommendations = props.message.recommendations
@@ -64,8 +56,10 @@ function Message(props) {
   const ref = useRef()
 
   var message = props.message
-  var is_user = props.message.provider_id != "iFetch"
+  var is_user = props.message.is_user
   var recommendations = message.recommendations
+
+  console.log(message)
 
   useEffect(() => {
     if (ref.current) {
@@ -207,7 +201,8 @@ function App() {
     // if (!hasResponded) return // safety code
 
     const temp = {
-      provider_id : "user",
+      is_user : true,
+      provider_id : "user " + userID,
       utterance : message,
       recommendations : []
     }
@@ -218,11 +213,15 @@ function App() {
     setSelectedFile(null)
   }
 
+  // Added new field to message and assumed 
+  //  the existance of a provider_id value
   const recieveMessage = (message, utterance, isUpToDate=false) => {
     // if (!message.has_response) return // safety code
     
     const temp1 = {
-      provider_id : "iFetch",
+      is_user : false,
+      provider_id : message.provider_id == "iFetch" ? 
+        message.provider_id : "user " + message.provider_id,
       utterance : message.response,
       recommendations : message.recommendations == null ? [] : message.recommendations
     }
@@ -233,7 +232,8 @@ function App() {
     }
 
     const temp2 = {
-      provider_id : "user",
+      is_user : true,
+      provider_id : "user " + userID,
       utterance : utterance,
       recommendations : []
     }
@@ -244,6 +244,7 @@ function App() {
   useEffect(() => {
     const response = SendMessage("Hi!", userID, sessionID, "", "", recieveMessage, null, true)
     initialMessage()
+
   }, [])
   
   const selectFileHandler = event => {
