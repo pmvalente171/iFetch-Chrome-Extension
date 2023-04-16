@@ -23,7 +23,7 @@ function Recomenadation(props) {
 
   const [img, setImg] = useState()
   const [index, setIndex] = useState(0)
-  const message= recommendations[index].message
+  const message = recommendations[index].message
 
   const clamp = (num, min, max) => Math.min(Math.max(num, min), max)
 
@@ -48,7 +48,9 @@ function Recomenadation(props) {
       <button className={index == 0 ? "invisible-button" : "regular-arrows"} onClick={() =>{
         click(-1)
       }}>{"<"}</button>
-      <img src={recommendations[index].image_path} style={{ alignSelf: 'center' }}  /> 
+      <img src={recommendations[index].image_path} onClick={() => {
+        window.open(recommendations[index].product_url)
+      }}  style={{ alignSelf: 'center' }}  />
       <button className={index == recommendations.length - 1 ? "invisible-button" : "regular-arrows"} onClick={() =>{
         click(1)
       }}>{">"}</button>
@@ -76,7 +78,7 @@ function Message(props) {
       <div className={is_user ? 'message-content-user' : 'message-content-bot'}>
         {message.utterance}
       </div>
-      {recommendations.length != 0 ? <Recomenadation message = {message} is_user={is_user}  /> : <></>}
+      {recommendations.length != 0 ? <Recomenadation message = {message} is_user={is_user}/> : <></>}
       <div className={is_user ? 'message-timestamp-user' : 'message-timestamp-bot'}>
         {message.provider_id}
       </div>
