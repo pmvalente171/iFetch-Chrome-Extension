@@ -153,7 +153,7 @@ function AudioRecorder(props) {
                 <div className="audio-controls">
                     {!permission ? (
                         <button onClick={getMicrophonePermission} type="button">
-                            Get Microphone
+                          Get Microphone
                         </button>
                     ): null}
                     {permission ? (
@@ -324,6 +324,7 @@ function App() {
           onChange={selectFileHandler} 
         />
       </div>
+      <AudioRecorder/>
     </div>
   );
 }
