@@ -220,8 +220,8 @@ function App() {
     
     const temp1 = {
       is_user : false,
-      provider_id : message.provider_id == "iFetch" ? 
-        message.provider_id : "user " + message.provider_id,
+      provider_id : message.user_id == "iFetch" ? 
+        message.user_id : "user " + message.user_id,
       utterance : message.response,
       recommendations : message.recommendations == null ? [] : message.recommendations
     }

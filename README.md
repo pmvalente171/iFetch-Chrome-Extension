@@ -54,7 +54,7 @@ The interface expects responses in the following JSON format:
   recommendations : List<Recommendations>,
   response : string,
   system_action : string,
-  provider_id : string
+  user_id : string
 }
 ```
 Where recommendations are presented in the following JSON format:
