@@ -6,9 +6,14 @@ import { StyleSheet, ScrollView, View } from 'react-native';
 
 // const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
 const MESSAGES_ENDPOINT = "localhost:4000"
-// Idea have an aditional hash field contaioning the user id
-// we already have user ID field, so it makes sense just printing
-// Have the session id not be public
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop:"20px",
+    flex: 1,
+    height: "350px"
+  }
+});
 
 function Recomenadation(props) {
   const recommendations = props.message.recommendations
@@ -123,48 +128,6 @@ function SendMessageForm (props) {
         type="text"/>
     </form>
   )
-}
-
-function AudioRecorder(props) {
-  const [permission, setPermission] = useState(false);
-  const [stream, setStream] = useState(null);
-
-  const getMicrophonePermission = async () => {
-      if ("MediaRecorder" in window) {
-          try {
-              const streamData = await navigator.mediaDevices.getUserMedia({
-                  audio: true,
-                  video: false,
-              });
-              setPermission(true);
-              setStream(streamData);
-          } catch (err) {
-              alert(err.message);
-          }
-      } else {
-          alert("The MediaRecorder API is not supported in your browser.");
-      }
-    };
-
-    return (
-        <div>
-            <h2>Audio Recorder</h2>
-            <main>
-                <div className="audio-controls">
-                    {!permission ? (
-                        <button onClick={getMicrophonePermission} type="button">
-                          Get Microphone
-                        </button>
-                    ): null}
-                    {permission ? (
-                        <button type="button">
-                            Record
-                        </button>
-                    ): null}
-                </div>
-            </main>
-        </div>
-    );
 }
 
 // Function responsible for sending 
@@ -324,17 +287,10 @@ function App() {
           onChange={selectFileHandler} 
         />
       </div>
-      <AudioRecorder/>
     </div>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop:"20px",
-    flex: 1,
-    height: "350px"
-  }
-});
+
 
 export default App;
