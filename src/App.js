@@ -64,8 +64,6 @@ function Message(props) {
   var is_user = props.message.is_user
   var recommendations = message.recommendations
 
-  console.log(message)
-
   useEffect(() => {
     if (ref.current) {
       ref.current.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -169,6 +167,7 @@ function randomNumberInRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+
 function App() {
   const [messages, setMessages] = useState([])
   const [showContent, setShowContent] = useState(true)
@@ -259,11 +258,16 @@ function App() {
     console.log(event.target.files[0])
     let reader = new FileReader()
 
-    reader.readAsDataURL(event.target.files[0])
-    setSelectedFile(event.target.files[0])
+    var file = event.target.files[0]
+    reader.readAsDataURL(file)
+    setSelectedFile(file)
     
-    reader.onload = () => {      
-     setSelectedImage(reader.result)
+    reader.onload = () => {
+      console.log(reader.result)
+      setSelectedImage(reader.result)
+    }
+    reader.onerror = function (error) {
+      console.log('Error: ', error);
     }
   }
 
@@ -277,15 +281,13 @@ function App() {
       </View>
       <div className='form-container'>
         <SendMessageForm handleSubmit = {handleSubmit}/>
-        <input 
-          className= 'image-input' 
-          type='file' 
-          id='file' 
-          name="file"
-          placeholder="Upload an Image" 
-          required
-          onChange={selectFileHandler} 
+        <input className= 'image-input' 
+          type='file' placeholder="Upload an Image" 
+          required onChange={selectFileHandler} text='Upload an Image'
         />
+        {
+          selectedImage ? <img src={`${selectedImage}`} />: ''
+        }
       </div>
     </div>
   );
