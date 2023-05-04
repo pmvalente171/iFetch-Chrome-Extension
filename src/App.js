@@ -38,20 +38,32 @@ function Recomenadation(props) {
 
   return (
     <div className='response'>
-    <div className={props.is_user ? 'message-content-user' : 'message-content-bot'}>
-        {message}
+      <div className={props.is_user ? 'message-content-user' : 'message-content-bot'}>
+          {message}
+      </div>
+      <div className='landscape-view'>
+        <button className={index == 0 ? "invisible-button" : "regular-arrows"} onClick={() =>{
+          click(-1)
+        }}>{"<"}</button>
+        <img src={recommendations[index].image_path} onClick={() => { // Add the option to show the uploaded image
+          window.open(recommendations[index].product_url)
+        }}  style={{ alignSelf: 'center' }} />
+        <button className={index == recommendations.length - 1 ? "invisible-button" : "regular-arrows"} onClick={() =>{
+          click(1)
+        }}>{">"}</button>
+      </div>
     </div>
-    <div className='landscape-view'>
-      <button className={index == 0 ? "invisible-button" : "regular-arrows"} onClick={() =>{
-        click(-1)
-      }}>{"<"}</button>
-      <img src={recommendations[index].image_path} onClick={() => {
-        window.open(recommendations[index].product_url)
-      }}  style={{ alignSelf: 'center' }}  /> 
-      <button className={index == recommendations.length - 1 ? "invisible-button" : "regular-arrows"} onClick={() =>{
-        click(1)
-      }}>{">"}</button>
-    </div>
+  )
+}
+
+// Method for showing an image in a message
+function Image(props) {
+  
+  return (
+    <div className='response'>
+      <div className='landscape-view'>
+        <img src={props.image}/>
+      </div>
     </div>
   )
 }
@@ -60,7 +72,8 @@ function Recomenadation(props) {
 function Message(props) {
   const ref = useRef()
 
-  var message = props.message
+  var message = props.message // has field for the 
+                              // image uploaded by the user
   var is_user = props.message.is_user
   var recommendations = message.recommendations
 
@@ -75,6 +88,7 @@ function Message(props) {
       <div className={is_user ? 'message-content-user' : 'message-content-bot'}>
         {message.utterance}
       </div>
+      {message.image ? <Image image={message.image}/> : <></>}
       {recommendations.length != 0 ? <Recomenadation message = {message} is_user={is_user}/> : <></>}
       <div className={is_user ? 'message-timestamp-user' : 'message-timestamp-bot'}>
         {message.provider_id}
@@ -207,14 +221,15 @@ function App() {
   const handleSubmit = (message) => {
     // if (!hasResponded) return // safety code
 
-    const temp = {
+    const user_message = {
       is_user : true,
       provider_id : "user " + userID,
       utterance : message,
+      image : selectedImage,
       recommendations : []
     }
 
-    setMessages([...messages, temp])
+    setMessages([...messages, user_message])
     SendMessage(message, userID, sessionID, "", "", recieveMessage, selectedImage)
     setSelectedImage(null)
     setSelectedFile(null)
@@ -225,27 +240,31 @@ function App() {
   const recieveMessage = (message, utterance, isUpToDate=false) => {
     // if (!message.has_response) return // safety code
     
-    const temp1 = {
+    const agent_message = {
       is_user : false,
       provider_id : message.user_id == "iFetch" ? 
         message.user_id : "user " + message.user_id,
       utterance : message.response,
+      image : null,
       recommendations : message.recommendations == null ? [] : message.recommendations
     }
 
     if (isUpToDate) {
-      setMessages([...messages, temp1])
+      setMessages([...messages, agent_message])
       return
     }
 
-    const temp2 = {
+    // bug fix for a bug that happens when 
+    //  the user sends a message
+    const user_message = {
       is_user : true,
       provider_id : "user " + userID,
       utterance : utterance,
+      image : selectedImage,
       recommendations : []
     }
 
-    setMessages([...messages, temp2, temp1])
+    setMessages([...messages, user_message, agent_message])
   }
 
   useEffect(() => {
@@ -270,6 +289,8 @@ function App() {
       console.log('Error: ', error);
     }
   }
+  
+  // TODO: Add icon of the selected image.
 
   return (
     <div className='chat-container'>
@@ -285,14 +306,11 @@ function App() {
           type='file' placeholder="Upload an Image" 
           required onChange={selectFileHandler} text='Upload an Image'
         />
-        {
-          selectedImage ? <img src={`${selectedImage}`} />: ''
-        }
+
       </div>
     </div>
   );
 }
-
 
 
 export default App;
