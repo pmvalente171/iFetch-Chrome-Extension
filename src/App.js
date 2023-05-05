@@ -185,10 +185,12 @@ function randomNumberInRange(min, max) {
 function App() {
   const [messages, setMessages] = useState([])
   const [showContent, setShowContent] = useState(true)
+
   const [userID, setUserID] = useState(`${randomNumberInRange(0, 10000)}`)
   const [sessionID, setSessionID] = useState(`${randomNumberInRange(0, 10000)}`)
+
   const [selectedImage, setSelectedImage] = useState(null)
-  const [selectedFile, setSelectedFile] = useState(null)
+  const inputRef = useRef(null)
 
   const setChatbox = () => {
     setShowContent(!showContent)
@@ -231,8 +233,11 @@ function App() {
 
     setMessages([...messages, user_message])
     SendMessage(message, userID, sessionID, "", "", recieveMessage, selectedImage)
+
+    // Set references to null
     setSelectedImage(null)
-    setSelectedFile(null)
+    inputRef.current.value = null
+    console.log('Hii!')
   }
 
   // Added new field to message and assumed 
@@ -279,10 +284,8 @@ function App() {
 
     var file = event.target.files[0]
     reader.readAsDataURL(file)
-    setSelectedFile(file)
     
     reader.onload = () => {
-      console.log(reader.result)
       setSelectedImage(reader.result)
     }
     reader.onerror = function (error) {
@@ -302,7 +305,7 @@ function App() {
       </View>
       <div className='form-container'>
         <SendMessageForm handleSubmit = {handleSubmit}/>
-        <input className= 'image-input' 
+        <input ref = {inputRef} className= 'image-input' 
           type='file' placeholder="Upload an Image" 
           required onChange={selectFileHandler} text='Upload an Image'
         />
