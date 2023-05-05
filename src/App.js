@@ -6,9 +6,14 @@ import { StyleSheet, ScrollView, View } from 'react-native';
 
 // const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
 const MESSAGES_ENDPOINT = "localhost:4000"
-// Idea have an aditional hash field contaioning the user id
-// we already have user ID field, so it makes sense just printing
-// Have the session id not be public
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop:"20px",
+    flex: 1,
+    height: "350px"
+  }
+});
 
 function Recomenadation(props) {
   const recommendations = props.message.recommendations
@@ -33,20 +38,32 @@ function Recomenadation(props) {
 
   return (
     <div className='response'>
-    <div className={props.is_user ? 'message-content-user' : 'message-content-bot'}>
-        {message}
+      <div className={props.is_user ? 'message-content-user' : 'message-content-bot'}>
+          {message}
+      </div>
+      <div className='landscape-view'>
+        <button className={index == 0 ? "invisible-button" : "regular-arrows"} onClick={() =>{
+          click(-1)
+        }}>{"<"}</button>
+        <img src={recommendations[index].image_path} onClick={() => { // Add the option to show the uploaded image
+          window.open(recommendations[index].product_url)
+        }}  style={{ alignSelf: 'center' }} />
+        <button className={index == recommendations.length - 1 ? "invisible-button" : "regular-arrows"} onClick={() =>{
+          click(1)
+        }}>{">"}</button>
+      </div>
     </div>
-    <div className='landscape-view'>
-      <button className={index == 0 ? "invisible-button" : "regular-arrows"} onClick={() =>{
-        click(-1)
-      }}>{"<"}</button>
-      <img src={recommendations[index].image_path} onClick={() => {
-        window.open(recommendations[index].product_url)
-      }}  style={{ alignSelf: 'center' }}  /> 
-      <button className={index == recommendations.length - 1 ? "invisible-button" : "regular-arrows"} onClick={() =>{
-        click(1)
-      }}>{">"}</button>
-    </div>
+  )
+}
+
+// Method for showing an image in a message
+function Image(props) {
+  
+  return (
+    <div className='response'>
+      <div className='landscape-view'>
+        <img src={props.image}/>
+      </div>
     </div>
   )
 }
@@ -55,11 +72,10 @@ function Recomenadation(props) {
 function Message(props) {
   const ref = useRef()
 
-  var message = props.message
+  var message = props.message // has field for the 
+                              // image uploaded by the user
   var is_user = props.message.is_user
   var recommendations = message.recommendations
-
-  console.log(message)
 
   useEffect(() => {
     if (ref.current) {
@@ -72,6 +88,7 @@ function Message(props) {
       <div className={is_user ? 'message-content-user' : 'message-content-bot'}>
         {message.utterance}
       </div>
+      {message.image ? <Image image={message.image}/> : <></>}
       {recommendations.length != 0 ? <Recomenadation message = {message} is_user={is_user}/> : <></>}
       <div className={is_user ? 'message-timestamp-user' : 'message-timestamp-bot'}>
         {message.provider_id}
@@ -105,6 +122,9 @@ function SendMessageForm (props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (message == "" || !message) 
+      return;
+    
     props.handleSubmit(message)
     setMessage("")
   }
@@ -161,13 +181,16 @@ function randomNumberInRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+
 function App() {
   const [messages, setMessages] = useState([])
   const [showContent, setShowContent] = useState(true)
+
   const [userID, setUserID] = useState(`${randomNumberInRange(0, 10000)}`)
   const [sessionID, setSessionID] = useState(`${randomNumberInRange(0, 10000)}`)
+
   const [selectedImage, setSelectedImage] = useState(null)
-  const [selectedFile, setSelectedFile] = useState(null)
+  const inputRef = useRef(null)
 
   const setChatbox = () => {
     setShowContent(!showContent)
@@ -200,17 +223,21 @@ function App() {
   const handleSubmit = (message) => {
     // if (!hasResponded) return // safety code
 
-    const temp = {
+    const user_message = {
       is_user : true,
       provider_id : "user " + userID,
       utterance : message,
+      image : selectedImage,
       recommendations : []
     }
 
-    setMessages([...messages, temp])
+    setMessages([...messages, user_message])
     SendMessage(message, userID, sessionID, "", "", recieveMessage, selectedImage)
+
+    // Set references to null
     setSelectedImage(null)
-    setSelectedFile(null)
+    inputRef.current.value = null
+    console.log('Hii!')
   }
 
   // Added new field to message and assumed 
@@ -218,27 +245,31 @@ function App() {
   const recieveMessage = (message, utterance, isUpToDate=false) => {
     // if (!message.has_response) return // safety code
     
-    const temp1 = {
+    const agent_message = {
       is_user : false,
       provider_id : message.user_id == "iFetch" ? 
         message.user_id : "user " + message.user_id,
       utterance : message.response,
+      image : null,
       recommendations : message.recommendations == null ? [] : message.recommendations
     }
 
     if (isUpToDate) {
-      setMessages([...messages, temp1])
+      setMessages([...messages, agent_message])
       return
     }
 
-    const temp2 = {
+    // bug fix for a bug that happens when 
+    //  the user sends a message
+    const user_message = {
       is_user : true,
       provider_id : "user " + userID,
       utterance : utterance,
+      image : selectedImage,
       recommendations : []
     }
 
-    setMessages([...messages, temp2, temp1])
+    setMessages([...messages, user_message, agent_message])
   }
 
   useEffect(() => {
@@ -251,13 +282,18 @@ function App() {
     console.log(event.target.files[0])
     let reader = new FileReader()
 
-    reader.readAsDataURL(event.target.files[0])
-    setSelectedFile(event.target.files[0])
+    var file = event.target.files[0]
+    reader.readAsDataURL(file)
     
-    reader.onload = () => {      
-     setSelectedImage(reader.result)
+    reader.onload = () => {
+      setSelectedImage(reader.result)
+    }
+    reader.onerror = function (error) {
+      console.log('Error: ', error);
     }
   }
+  
+  // TODO: Add icon of the selected image.
 
   return (
     <div className='chat-container'>
@@ -269,26 +305,15 @@ function App() {
       </View>
       <div className='form-container'>
         <SendMessageForm handleSubmit = {handleSubmit}/>
-        <input 
-          className= 'image-input' 
-          type='file' 
-          id='file' 
-          name="file"
-          placeholder="Upload an Image" 
-          required
-          onChange={selectFileHandler} 
+        <input ref = {inputRef} className= 'image-input' 
+          type='file' placeholder="Upload an Image" 
+          required onChange={selectFileHandler} text='Upload an Image'
         />
+
       </div>
     </div>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop:"20px",
-    flex: 1,
-    height: "350px"
-  }
-});
 
 export default App;
