@@ -3,6 +3,11 @@ import './App.css'
 import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, ScrollView, View } from 'react-native';
 
+// Material UI imports
+import { TextField, InputAdornment, IconButton, } from '@mui/material';
+import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
+import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
+
 
 // const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
 const MESSAGES_ENDPOINT = "localhost:4000"
@@ -132,12 +137,29 @@ function SendMessageForm (props) {
   return (
     <form
       onSubmit={handleSubmit}>
-      <input
-        className='text-form'
-        onChange={handleChange}
-        value={message}
+      <TextField
+        className='text-form' onChange={handleChange}
+        value={message} label="Message" fullWidth
         placeholder="Type your message and hit ENTER"
-        type="text"/>
+        type="text"
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <input
+                accept='image/*'
+                ref = {props.inputRef}  
+                type = 'file' onChange={props.selectFileHandler}
+                id = 'file-upload'
+                style = {{ display: 'none' }}
+              />
+              <label htmlFor="file-upload">
+                <IconButton variant="contained" color="primary" component="span">
+                  { !props.isImageSelected ? <AddCircleOutlineSharpIcon/> : <CheckCircleSharpIcon/>}
+                </IconButton>
+              </label>
+            </InputAdornment>
+          ),
+        }}/>
     </form>
   )
 }
@@ -186,8 +208,8 @@ function App() {
   const [messages, setMessages] = useState([])
   const [showContent, setShowContent] = useState(true)
 
-  const [userID, setUserID] = useState(`${randomNumberInRange(0, 10000)}`)
-  const [sessionID, setSessionID] = useState(`${randomNumberInRange(0, 10000)}`)
+  const [userID] = useState(`${randomNumberInRange(0, 10000)}`)
+  const [sessionID] = useState(`${randomNumberInRange(0, 10000)}`)
 
   const [selectedImage, setSelectedImage] = useState(null)
   const inputRef = useRef(null)
@@ -247,8 +269,7 @@ function App() {
     
     const agent_message = {
       is_user : false,
-      provider_id : message.user_id == "iFetch" ? 
-        message.user_id : "user " + message.user_id,
+      provider_id : message.user_id == "iFetch" ? message.user_id : "user " + message.user_id,
       utterance : message.response,
       image : null,
       recommendations : message.recommendations == null ? [] : message.recommendations
@@ -304,12 +325,10 @@ function App() {
         <Messages messages={messages}/>
       </View>
       <div className='form-container'>
-        <SendMessageForm handleSubmit = {handleSubmit}/>
-        <input ref = {inputRef} className= 'image-input' 
-          type='file' placeholder="Upload an Image" 
-          required onChange={selectFileHandler} text='Upload an Image'
-        />
-
+        <SendMessageForm handleSubmit = {handleSubmit}
+          selectFileHandler = {selectFileHandler}
+          isImageSelected = {selectedImage}
+          inputRef = {inputRef}/>
       </div>
     </div>
   );
