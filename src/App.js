@@ -4,7 +4,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, ScrollView, View } from 'react-native';
 
 // Material UI imports
-import { TextField, InputAdornment, IconButton, } from '@mui/material';
+import { TextField, InputAdornment, IconButton,
+  Divider, Box, Typography } from '@mui/material';
+import { Card, CardMedia, CardContent, CardActions } from '@mui/material';
+import { Grid, Container} from '@mui/material';
+
 import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
 
@@ -21,21 +25,12 @@ const styles = StyleSheet.create({
 });
 
 function Recomenadation(props) {
+
   const recommendations = props.message.recommendations
-
-  const [img, setImg] = useState()
   const [index, setIndex] = useState(0)
+
   const message = recommendations[index].message
-
   const clamp = (num, min, max) => Math.min(Math.max(num, min), max)
-
-  const fetchImage = async (imageUrl) => {
-    const res = await fetch(imageUrl)
-    const imageBlob = await res.blob()
-    const imageObjectURL = URL.createObjectURL(imageBlob)
-    setImg(imageObjectURL)
-    return imageObjectURL
-  }
 
   var click = (dir) => {
     setIndex(clamp(index + (dir * 1), 0, recommendations.length - 1))
@@ -53,7 +48,8 @@ function Recomenadation(props) {
         <img src={recommendations[index].image_path} onClick={() => { // Add the option to show the uploaded image
           window.open(recommendations[index].product_url)
         }}  style={{ alignSelf: 'center' }} />
-        <button className={index == recommendations.length - 1 ? "invisible-button" : "regular-arrows"} onClick={() =>{
+        <button className={index == recommendations.length - 1 ? "invisible-button" : "regular-arrows"} 
+        onClick={() =>{
           click(1)
         }}>{">"}</button>
       </div>
@@ -65,11 +61,16 @@ function Recomenadation(props) {
 function Image(props) {
   
   return (
-    <div className='response'>
-      <div className='landscape-view'>
-        <img src={props.image}/>
-      </div>
-    </div>
+    <Grid 
+      container justifyContent="space-evenly" 
+      alignItems="center" sx={{ marginBottom: 1 }} >
+      <Card >
+        <CardMedia
+          sx={{ height: 180, width: 180 }}
+          image={props.image}
+        />
+      </Card>
+    </Grid>
   )
 }
 
@@ -89,20 +90,20 @@ function Message(props) {
   }, []);
 
   return (
-    <div className={is_user ? 'message-user' : 'message-bot'} ref={ref}>
-      <div className={is_user ? 'message-content-user' : 'message-content-bot'}>
+    <Box component="div" className={is_user ? 'message-user' : 'message-bot'} ref={ref}>
+      <Typography variant="body1" className={is_user ? 'message-content-user' : 'message-content-bot'}>
         {message.utterance}
-      </div>
+      </Typography>
       {message.image ? <Image image={message.image}/> : <></>}
       {recommendations.length != 0 ? <Recomenadation message = {message} is_user={is_user}/> : <></>}
-      <div className={is_user ? 'message-timestamp-user' : 'message-timestamp-bot'}>
+      <Typography variant="caption" className={is_user ? 'message-timestamp-user' : 'message-timestamp-bot'}>
         {message.provider_id}
-      </div>
-    </div>
+      </Typography>
+    </Box>
   )
 }
 
-// Fnction responsible for printing all the messages
+// Function responsible for printing all the messages
 function Messages(props) {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1}}>
@@ -138,7 +139,8 @@ function SendMessageForm (props) {
     <form
       onSubmit={handleSubmit}>
       <TextField
-        className='text-form' onChange={handleChange}
+        autoComplete='off'
+        onChange={handleChange}
         value={message} label="Message" fullWidth
         placeholder="Type your message and hit ENTER"
         type="text"
@@ -259,7 +261,6 @@ function App() {
     // Set references to null
     setSelectedImage(null)
     inputRef.current.value = null
-    console.log('Hii!')
   }
 
   // Added new field to message and assumed 
@@ -324,12 +325,13 @@ function App() {
       <View style={styles.container}>
         <Messages messages={messages}/>
       </View>
-      <div className='form-container'>
+      <Divider variant="middle" />
+      <Box sx={{ m: 2 }}>
         <SendMessageForm handleSubmit = {handleSubmit}
           selectFileHandler = {selectFileHandler}
           isImageSelected = {selectedImage}
           inputRef = {inputRef}/>
-      </div>
+      </Box>
     </div>
   );
 }
