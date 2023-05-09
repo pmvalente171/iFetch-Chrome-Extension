@@ -5,13 +5,58 @@ import { StyleSheet, ScrollView, View } from 'react-native';
 
 // Material UI imports
 import { TextField, InputAdornment, IconButton,
-  Divider, Box, Typography } from '@mui/material';
+  Divider, Box, Typography, Button } from '@mui/material';
 import { Card, CardMedia, CardContent, CardActions } from '@mui/material';
 import { Grid, Container} from '@mui/material';
 
 import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
 
+const dummy_data = {
+  is_user : false,
+  provider_id : "iFetch",
+  utterance : "Hi! Here are some recommendations for you!",
+  image : null,
+  recommendations : [
+    {
+      brand : "Balenciaga",
+      description : "Calça jeans reta cintura baixa.\n Lavagem escura, cintura baixa, passantes para cinto, fechamento frontal por botão e zíper, cinco bolsos e corte reto. Material: algodão. Cor: Preto.",
+      id : "1234",
+      image_path : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg",
+      product_url : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg"
+    },{
+      brand : "Balenciaga",
+      description : "Calça jeans reta cintura baixa.\n Lavagem escura, cintura baixa, passantes para cinto, fechamento frontal por botão e zíper, cinco bolsos e corte reto. Material: algodão. Cor: Preto.",
+      id : "1234",
+      image_path : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg",
+      product_url : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg"
+    },{
+      brand : "Balenciaga",
+      description : "Calça jeans reta cintura baixa.\n Lavagem escura, cintura baixa, passantes para cinto, fechamento frontal por botão e zíper, cinco bolsos e corte reto. Material: algodão. Cor: Preto.",
+      id : "1234",
+      image_path : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg",
+      product_url : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg"
+    },{
+      brand : "Balenciaga",
+      description : "Calça jeans reta cintura baixa.\n Lavagem escura, cintura baixa, passantes para cinto, fechamento frontal por botão e zíper, cinco bolsos e corte reto. Material: algodão. Cor: Preto.",
+      id : "1234",
+      image_path : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg",
+      product_url : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg"
+    },{
+      brand : "Balenciaga",
+      description : "Calça jeans reta cintura baixa.\n Lavagem escura, cintura baixa, passantes para cinto, fechamento frontal por botão e zíper, cinco bolsos e corte reto. Material: algodão. Cor: Preto.",
+      id : "1234",
+      image_path : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg",
+      product_url : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg"
+    },{
+      brand : "Balenciaga",
+      description : "Calça jeans reta cintura baixa.\n Lavagem escura, cintura baixa, passantes para cinto, fechamento frontal por botão e zíper, cinco bolsos e corte reto. Material: algodão. Cor: Preto.",
+      id : "1234",
+      image_path : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg",
+      product_url : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg"
+    },
+  ],
+}
 
 // const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
 const MESSAGES_ENDPOINT = "localhost:4000"
@@ -44,14 +89,34 @@ function Recomenadation(props) {
       <div className='landscape-view'>
         <button className={index == 0 ? "invisible-button" : "regular-arrows"} onClick={() =>{
           click(-1)
-        }}>{"<"}</button>
-        <img src={recommendations[index].image_path} onClick={() => { // Add the option to show the uploaded image
-          window.open(recommendations[index].product_url)
-        }}  style={{ alignSelf: 'center' }} />
+        }}>{"<"}
+        </button>
+        <Grid 
+          container justifyContent="space-evenly" 
+          alignItems="center" >
+          <Card 
+              sx={{ width: 220 }}>
+            <CardMedia
+              sx={{ height: 220 }}
+              image={recommendations[index].image_path}
+            />
+            <CardContent>
+            <Typography gutterBottom variant="h5" component="div">
+              {recommendations[index].brand}
+            </Typography>
+            </CardContent>
+            <CardActions>
+              <Button onClick={() => { // Add the option to show the uploaded image
+                window.open(recommendations[index].product_url)
+                }} size="small">Learn More</Button> 
+            </CardActions>
+          </Card>
+        </Grid>
         <button className={index == recommendations.length - 1 ? "invisible-button" : "regular-arrows"} 
         onClick={() =>{
           click(1)
-        }}>{">"}</button>
+        }}>{">"}
+        </button>
       </div>
     </div>
   )
@@ -63,7 +128,7 @@ function Image(props) {
   return (
     <Grid 
       container justifyContent="space-evenly" 
-      alignItems="center" sx={{ marginBottom: 1 }} >
+      alignItems="center" sx={{ marginBottom: 1, marginBottom: 2 }} >
       <Card >
         <CardMedia
           sx={{ height: 180, width: 180 }}
@@ -114,6 +179,7 @@ function Messages(props) {
           </View>
         )
       })}
+      <Message message={dummy_data}/>
     </ScrollView>
   )
 }
