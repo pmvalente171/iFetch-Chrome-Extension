@@ -5,12 +5,15 @@ import { StyleSheet, ScrollView, View } from 'react-native';
 
 // Material UI imports
 import { TextField, InputAdornment, IconButton,
-  Divider, Box, Typography, Button } from '@mui/material';
+  Divider, Box, Typography, Button, Paper } from '@mui/material';
 import { Card, CardMedia, CardContent, CardActions } from '@mui/material';
 import { Grid, Container} from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 
 const dummy_data = {
   is_user : false,
@@ -74,50 +77,43 @@ function Recomenadation(props) {
   const recommendations = props.message.recommendations
   const [index, setIndex] = useState(0)
 
-  const message = recommendations[index].message
   const clamp = (num, min, max) => Math.min(Math.max(num, min), max)
-
   var click = (dir) => {
     setIndex(clamp(index + (dir * 1), 0, recommendations.length - 1))
   }
 
   return (
-    <div className='response'>
-      <div className={props.is_user ? 'message-content-user' : 'message-content-bot'}>
-          {message}
-      </div>
-      <div className='landscape-view'>
-        <button className={index == 0 ? "invisible-button" : "regular-arrows"} onClick={() =>{
-          click(-1)
-        }}>{"<"}
-        </button>
-        <Grid 
-          container justifyContent="space-evenly" 
-          alignItems="center" >
-          <Card 
-              sx={{ width: 220 }}>
-            <CardMedia
-              sx={{ height: 220 }}
-              image={recommendations[index].image_path}
-            />
-            <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {recommendations[index].brand}
-            </Typography>
-            </CardContent>
-            <CardActions>
-              <Button onClick={() => { // Add the option to show the uploaded image
-                window.open(recommendations[index].product_url)
-                }} size="small">Learn More</Button> 
-            </CardActions>
-          </Card>
-        </Grid>
-        <button className={index == recommendations.length - 1 ? "invisible-button" : "regular-arrows"} 
-        onClick={() =>{
-          click(1)
-        }}>{">"}
-        </button>
-      </div>
+    <div>
+      <Grid container
+        direction="row"
+        justifyContent="space-evenly"
+        alignItems="center"
+      >
+        <IconButton disabled={index == 0} onClick={() =>{click(-1)}}>
+          <ArrowCircleLeftIcon sx={{ color: 'primary.contrastText' }}/>
+        </IconButton>
+        <Card 
+            variant="outlined"
+            sx={{ maxWidth: 200, mt : 2 }}>
+          <CardMedia
+            sx={{ height: 160 }}
+            image={recommendations[index].image_path}
+          />
+          <CardContent>
+          <Typography gutterBottom variant="h5" component="div">
+            {recommendations[index].brand}
+          </Typography>
+          </CardContent>
+          <CardActions>
+            <Button sx={{ mt : -4, pb : -2 }} onClick={() => { // Add the option to show the uploaded image
+              window.open(recommendations[index].product_url)
+              }} size="small">Learn More</Button> 
+          </CardActions>
+        </Card>
+        <IconButton disabled={index == recommendations.length - 1} onClick={() =>{click(1)}}>
+          <ArrowCircleRightIcon sx={{ color: 'primary.contrastText' }}/>
+        </IconButton>
+      </Grid>
     </div>
   )
 }
@@ -128,7 +124,7 @@ function Image(props) {
   return (
     <Grid 
       container justifyContent="space-evenly" 
-      alignItems="center" sx={{ marginBottom: 1, marginBottom: 2 }} >
+      alignItems="center" sx={{ mb: 1, mt : 1 }} >
       <Card >
         <CardMedia
           sx={{ height: 180, width: 180 }}
@@ -154,17 +150,32 @@ function Message(props) {
     }
   }, []);
 
+  var has_recommendations = recommendations.length != 0
+  var message_css_class = is_user ? 'message-user' : 'message-bot'
+  message_css_class += has_recommendations ? '-has-recommendations' : ''
+  
+  var message_class = is_user ? 'message-content-user' : 'message-content-bot' 
+  var caption_class = is_user ? 'message-timestamp-user' : 'message-timestamp-bot'
+
+  var sx_property = is_user ? 
+    { bgcolor: 'background.paper',
+      color: 'text.primary',
+      boxShadow: 1 } : 
+    { bgcolor: 'primary.main',
+      color: 'text.secondary',
+      boxShadow: 1 }
+
   return (
-    <Box component="div" className={is_user ? 'message-user' : 'message-bot'} ref={ref}>
-      <Typography variant="body1" className={is_user ? 'message-content-user' : 'message-content-bot'}>
+    <Paper variant='outlined' sx={sx_property} className={message_css_class} ref={ref}>
+      <Typography variant="body1" className={message_class}>
         {message.utterance}
       </Typography>
       {message.image ? <Image image={message.image}/> : <></>}
       {recommendations.length != 0 ? <Recomenadation message = {message} is_user={is_user}/> : <></>}
-      <Typography variant="caption" className={is_user ? 'message-timestamp-user' : 'message-timestamp-bot'}>
+      <Typography variant="caption" className={caption_class}>
         {message.provider_id}
       </Typography>
-    </Box>
+    </Paper>
   )
 }
 
@@ -380,25 +391,44 @@ function App() {
       console.log('Error: ', error);
     }
   }
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+    },
+  });
+
+  const sx = { 
+    fontWeight: 'bold', 
+    fontFamily: 'Helvetica', 
+    p: 2, 
+    bgcolor:"background.paper", 
+    color:"text.primary" 
+  }
   
   // TODO: Add icon of the selected image.
 
   return (
-    <div className='chat-container'>
-      <div className='title-container'>
-        <h1 className='message-content-bot'>iFetch</h1>
-      </div>
+    <Paper variant="outlined" sx={{ boxShadow: 2 }} >
+      <ThemeProvider theme={darkTheme}>
+        <Paper >
+          <Typography variant="h5" 
+            sx={sx} >
+            iFetch
+          </Typography>
+        </Paper>
+      </ThemeProvider>
       <View style={styles.container}>
         <Messages messages={messages}/>
       </View>
       <Divider variant="middle" />
-      <Box sx={{ m: 2 }}>
+      <Box sx={{ m: 1 }}>
         <SendMessageForm handleSubmit = {handleSubmit}
           selectFileHandler = {selectFileHandler}
           isImageSelected = {selectedImage}
           inputRef = {inputRef}/>
       </Box>
-    </div>
+    </Paper>
   );
 }
 
