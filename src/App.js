@@ -69,8 +69,15 @@ const styles = StyleSheet.create({
     marginTop:"20px",
     flex: 1,
     height: "350px"
+  },
+  
+  container_2: {
+    marginTop:"20px",
+    flex: 1,
+    height: "280px"
   }
 });
+
 
 function Recomenadation(props) {
 
@@ -283,6 +290,23 @@ function randomNumberInRange(min, max) {
 }
 
 
+function ImagePreview(props) {
+  return (
+    <Card sx={{ width: 100, m: 2.1 }}>
+      <CardMedia 
+        sx={{ width: 100, 
+          height: 100 }}
+        image={props.image}
+      />
+      <CardActions>
+        <IconButton sx={{ mt: -1.5, mb: -1.5 }}>
+          <AddCircleOutlineSharpIcon/>
+        </IconButton>
+      </CardActions>
+    </Card>
+  )
+}
+
 function App() {
   const [messages, setMessages] = useState([])
   const [showContent, setShowContent] = useState(true)
@@ -407,6 +431,7 @@ function App() {
   }
   
   // TODO: Add icon of the selected image.
+  console.log(selectedImage ? true : false)
 
   return (
     <Paper variant="outlined" sx={{ boxShadow: 2 }} >
@@ -418,10 +443,15 @@ function App() {
           </Typography>
         </Paper>
       </ThemeProvider>
-      <View style={styles.container}>
+      <View style={selectedImage ? styles.container_2 : styles.container}>
         <Messages messages={messages}/>
       </View>
       <Divider variant="middle" />
+      {selectedImage ? 
+      <ImagePreview
+        image={selectedImage}
+      /> : 
+      <></>}
       <Box sx={{ m: 1 }}>
         <SendMessageForm handleSubmit = {handleSubmit}
           selectFileHandler = {selectFileHandler}
