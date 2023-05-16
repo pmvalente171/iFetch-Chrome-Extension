@@ -1,65 +1,22 @@
 /*global chrome*/
 import './App.css'
 import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, ScrollView, View } from 'react-native';
+import { StyleSheet, ScrollView, View } from 'react-native'
 
 // Material UI imports
 import { TextField, InputAdornment, IconButton,
-  Divider, Box, Typography, Button, Paper } from '@mui/material';
-import { Card, CardMedia, CardContent, CardActions } from '@mui/material';
-import { Grid, Container} from '@mui/material';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+  Divider, Box, Typography, Button, Paper } from '@mui/material'
+import { Card, CardMedia, CardContent, CardActions } from '@mui/material'
+import { Grid, Container} from '@mui/material'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import { pink } from '@mui/material/colors'
 
-import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
-import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp'
+import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp'
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight'
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft'
+import DeleteIcon from '@mui/icons-material/Delete'
 
-const dummy_data = {
-  is_user : false,
-  provider_id : "iFetch",
-  utterance : "Hi! Here are some recommendations for you!",
-  image : null,
-  recommendations : [
-    {
-      brand : "Balenciaga",
-      description : "Calça jeans reta cintura baixa.\n Lavagem escura, cintura baixa, passantes para cinto, fechamento frontal por botão e zíper, cinco bolsos e corte reto. Material: algodão. Cor: Preto.",
-      id : "1234",
-      image_path : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg",
-      product_url : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg"
-    },{
-      brand : "Balenciaga",
-      description : "Calça jeans reta cintura baixa.\n Lavagem escura, cintura baixa, passantes para cinto, fechamento frontal por botão e zíper, cinco bolsos e corte reto. Material: algodão. Cor: Preto.",
-      id : "1234",
-      image_path : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg",
-      product_url : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg"
-    },{
-      brand : "Balenciaga",
-      description : "Calça jeans reta cintura baixa.\n Lavagem escura, cintura baixa, passantes para cinto, fechamento frontal por botão e zíper, cinco bolsos e corte reto. Material: algodão. Cor: Preto.",
-      id : "1234",
-      image_path : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg",
-      product_url : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg"
-    },{
-      brand : "Balenciaga",
-      description : "Calça jeans reta cintura baixa.\n Lavagem escura, cintura baixa, passantes para cinto, fechamento frontal por botão e zíper, cinco bolsos e corte reto. Material: algodão. Cor: Preto.",
-      id : "1234",
-      image_path : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg",
-      product_url : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg"
-    },{
-      brand : "Balenciaga",
-      description : "Calça jeans reta cintura baixa.\n Lavagem escura, cintura baixa, passantes para cinto, fechamento frontal por botão e zíper, cinco bolsos e corte reto. Material: algodão. Cor: Preto.",
-      id : "1234",
-      image_path : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg",
-      product_url : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg"
-    },{
-      brand : "Balenciaga",
-      description : "Calça jeans reta cintura baixa.\n Lavagem escura, cintura baixa, passantes para cinto, fechamento frontal por botão e zíper, cinco bolsos e corte reto. Material: algodão. Cor: Preto.",
-      id : "1234",
-      image_path : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg",
-      product_url : "https://cdn-images.farfetch-contents.com/17/33/46/07/17334607_37617774_1000.jpg"
-    },
-  ],
-}
 
 // const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
 const MESSAGES_ENDPOINT = "localhost:4000"
@@ -74,7 +31,7 @@ const styles = StyleSheet.create({
   container_2: {
     marginTop:"20px",
     flex: 1,
-    height: "280px"
+    height: "204px"
   }
 });
 
@@ -97,7 +54,7 @@ function Recomenadation(props) {
         alignItems="center"
       >
         <IconButton disabled={index == 0} onClick={() =>{click(-1)}}>
-          <ArrowCircleLeftIcon sx={{ color: 'primary.contrastText' }}/>
+          <ArrowCircleLeftIcon sx={{ color: (index == 0) ? 'primary.disabled' : 'primary.contrastText' }}/>
         </IconButton>
         <Card 
             variant="outlined"
@@ -118,7 +75,7 @@ function Recomenadation(props) {
           </CardActions>
         </Card>
         <IconButton disabled={index == recommendations.length - 1} onClick={() =>{click(1)}}>
-          <ArrowCircleRightIcon sx={{ color: 'primary.contrastText' }}/>
+          <ArrowCircleRightIcon sx={{ color: (index == recommendations.length - 1) ? 'primary.disabled' : 'primary.contrastText' }}/>
         </IconButton>
       </Grid>
     </div>
@@ -197,7 +154,6 @@ function Messages(props) {
           </View>
         )
       })}
-      <Message message={dummy_data}/>
     </ScrollView>
   )
 }
@@ -299,8 +255,11 @@ function ImagePreview(props) {
         image={props.image}
       />
       <CardActions>
-        <IconButton sx={{ mt: -1.5, mb: -1.5 }}>
-          <AddCircleOutlineSharpIcon/>
+        <IconButton 
+          sx={{ mt: -1.5, mb: -1.5 }}
+          onClick={props. removeCallback}
+        >
+          <DeleteIcon sx={{ color: pink[500] }}/>
         </IconButton>
       </CardActions>
     </Card>
@@ -340,10 +299,15 @@ function App() {
             message,
             (response) => {
                 console.log(response)
-            });
-      });
+            })
+      })
       
-  };
+  }
+  
+  const removeImage = () => {
+    setSelectedImage(null)
+    inputRef.current.value = null
+  }
 
   const handleSubmit = (message) => {
     // if (!hasResponded) return // safety code
@@ -360,8 +324,7 @@ function App() {
     SendMessage(message, userID, sessionID, "", "", recieveMessage, selectedImage)
 
     // Set references to null
-    setSelectedImage(null)
-    inputRef.current.value = null
+    removeImage()
   }
 
   // Added new field to message and assumed 
@@ -429,9 +392,6 @@ function App() {
     bgcolor:"background.paper", 
     color:"text.primary" 
   }
-  
-  // TODO: Add icon of the selected image.
-  console.log(selectedImage ? true : false)
 
   return (
     <Paper variant="outlined" sx={{ boxShadow: 2 }} >
@@ -449,6 +409,7 @@ function App() {
       <Divider variant="middle" />
       {selectedImage ? 
       <ImagePreview
+        removeCallback={removeImage}
         image={selectedImage}
       /> : 
       <></>}
