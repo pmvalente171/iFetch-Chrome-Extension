@@ -19,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 
 
 // const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
-const MESSAGES_ENDPOINT = "localhost:4000"
+const MESSAGES_ENDPOINT = "http://localhost:4000"
 
 const styles = StyleSheet.create({
   container: {
