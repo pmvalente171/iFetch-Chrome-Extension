@@ -1,57 +1,83 @@
 /*global chrome*/
 import './App.css'
 import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, ScrollView, View } from 'react-native';
+import { StyleSheet, ScrollView, View } from 'react-native'
+
+// Material UI imports
+import { TextField, InputAdornment, IconButton,
+  Divider, Box, Typography, Button, Paper } from '@mui/material'
+import { Card, CardMedia, CardContent, CardActions } from '@mui/material'
+import { Grid, Container} from '@mui/material'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import { pink } from '@mui/material/colors'
+
+import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp'
+import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp'
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight'
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 
 // const MESSAGES_ENDPOINT = "https://ifetch.novasearch.org/agent/"
-const MESSAGES_ENDPOINT = "localhost:4000"
+const MESSAGES_ENDPOINT = "http://localhost:4000"
 
 const styles = StyleSheet.create({
   container: {
     marginTop:"20px",
     flex: 1,
     height: "350px"
+  },
+  
+  container_2: {
+    marginTop:"20px",
+    flex: 1,
+    height: "204px"
   }
 });
 
-function Recomenadation(props) {
-  const recommendations = props.message.recommendations
 
-  const [img, setImg] = useState()
+function Recomenadation(props) {
+
+  const recommendations = props.message.recommendations
   const [index, setIndex] = useState(0)
-  const message = recommendations[index].message
 
   const clamp = (num, min, max) => Math.min(Math.max(num, min), max)
-
-  const fetchImage = async (imageUrl) => {
-    const res = await fetch(imageUrl)
-    const imageBlob = await res.blob()
-    const imageObjectURL = URL.createObjectURL(imageBlob)
-    setImg(imageObjectURL)
-    return imageObjectURL
-  }
-
   var click = (dir) => {
     setIndex(clamp(index + (dir * 1), 0, recommendations.length - 1))
   }
 
   return (
-    <div className='response'>
-      <div className={props.is_user ? 'message-content-user' : 'message-content-bot'}>
-          {message}
-      </div>
-      <div className='landscape-view'>
-        <button className={index == 0 ? "invisible-button" : "regular-arrows"} onClick={() =>{
-          click(-1)
-        }}>{"<"}</button>
-        <img src={recommendations[index].image_path} onClick={() => { // Add the option to show the uploaded image
-          window.open(recommendations[index].product_url)
-        }}  style={{ alignSelf: 'center' }} />
-        <button className={index == recommendations.length - 1 ? "invisible-button" : "regular-arrows"} onClick={() =>{
-          click(1)
-        }}>{">"}</button>
-      </div>
+    <div>
+      <Grid container
+        direction="row"
+        justifyContent="space-evenly"
+        alignItems="center"
+      >
+        <IconButton disabled={index == 0} onClick={() =>{click(-1)}}>
+          <ArrowCircleLeftIcon sx={{ color: (index == 0) ? 'primary.disabled' : 'primary.contrastText' }}/>
+        </IconButton>
+        <Card 
+            variant="outlined"
+            sx={{ maxWidth: 200, mt : 2 }}>
+          <CardMedia
+            sx={{ height: 160 }}
+            image={recommendations[index].image_path}
+          />
+          <CardContent>
+          <Typography gutterBottom variant="h5" component="div">
+            {recommendations[index].brand}
+          </Typography>
+          </CardContent>
+          <CardActions>
+            <Button sx={{ mt : -4, pb : -2 }} onClick={() => { // Add the option to show the uploaded image
+              window.open(recommendations[index].product_url)
+              }} size="small">Learn More</Button> 
+          </CardActions>
+        </Card>
+        <IconButton disabled={index == recommendations.length - 1} onClick={() =>{click(1)}}>
+          <ArrowCircleRightIcon sx={{ color: (index == recommendations.length - 1) ? 'primary.disabled' : 'primary.contrastText' }}/>
+        </IconButton>
+      </Grid>
     </div>
   )
 }
@@ -60,11 +86,16 @@ function Recomenadation(props) {
 function Image(props) {
   
   return (
-    <div className='response'>
-      <div className='landscape-view'>
-        <img src={props.image}/>
-      </div>
-    </div>
+    <Grid 
+      container justifyContent="space-evenly" 
+      alignItems="center" sx={{ mb: 1, mt : 1 }} >
+      <Card >
+        <CardMedia
+          sx={{ height: 180, width: 180 }}
+          image={props.image}
+        />
+      </Card>
+    </Grid>
   )
 }
 
@@ -83,21 +114,36 @@ function Message(props) {
     }
   }, []);
 
+  var has_recommendations = recommendations.length != 0
+  var message_css_class = is_user ? 'message-user' : 'message-bot'
+  message_css_class += has_recommendations ? '-has-recommendations' : ''
+  
+  var message_class = is_user ? 'message-content-user' : 'message-content-bot' 
+  var caption_class = is_user ? 'message-timestamp-user' : 'message-timestamp-bot'
+
+  var sx_property = is_user ? 
+    { bgcolor: 'background.paper',
+      color: 'text.primary',
+      boxShadow: 1 } : 
+    { bgcolor: 'primary.main',
+      color: 'text.secondary',
+      boxShadow: 1 }
+
   return (
-    <div className={is_user ? 'message-user' : 'message-bot'} ref={ref}>
-      <div className={is_user ? 'message-content-user' : 'message-content-bot'}>
+    <Paper variant='outlined' sx={sx_property} className={message_css_class} ref={ref}>
+      <Typography variant="body1" className={message_class}>
         {message.utterance}
-      </div>
+      </Typography>
       {message.image ? <Image image={message.image}/> : <></>}
       {recommendations.length != 0 ? <Recomenadation message = {message} is_user={is_user}/> : <></>}
-      <div className={is_user ? 'message-timestamp-user' : 'message-timestamp-bot'}>
+      <Typography variant="caption" className={caption_class}>
         {message.provider_id}
-      </div>
-    </div>
+      </Typography>
+    </Paper>
   )
 }
 
-// Fnction responsible for printing all the messages
+// Function responsible for printing all the messages
 function Messages(props) {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1}}>
@@ -132,12 +178,30 @@ function SendMessageForm (props) {
   return (
     <form
       onSubmit={handleSubmit}>
-      <input
-        className='text-form'
+      <TextField
+        autoComplete='off'
         onChange={handleChange}
-        value={message}
+        value={message} label="Message" fullWidth
         placeholder="Type your message and hit ENTER"
-        type="text"/>
+        type="text"
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <input
+                accept='image/*'
+                ref = {props.inputRef}  
+                type = 'file' onChange={props.selectFileHandler}
+                id = 'file-upload'
+                style = {{ display: 'none' }}
+              />
+              <label htmlFor="file-upload">
+                <IconButton variant="contained" color="primary" component="span">
+                  { !props.isImageSelected ? <AddCircleOutlineSharpIcon/> : <CheckCircleSharpIcon/>}
+                </IconButton>
+              </label>
+            </InputAdornment>
+          ),
+        }}/>
     </form>
   )
 }
@@ -182,12 +246,32 @@ function randomNumberInRange(min, max) {
 }
 
 
+function ImagePreview(props) {
+  return (
+    <Card sx={{ width: 100, m: 2.1 }}>
+      <CardMedia 
+        sx={{ width: 100, 
+          height: 100 }}
+        image={props.image}
+      />
+      <CardActions>
+        <IconButton 
+          sx={{ mt: -1.5, mb: -1.5 }}
+          onClick={props. removeCallback}
+        >
+          <DeleteIcon sx={{ color: pink[500] }}/>
+        </IconButton>
+      </CardActions>
+    </Card>
+  )
+}
+
 function App() {
   const [messages, setMessages] = useState([])
   const [showContent, setShowContent] = useState(true)
 
-  const [userID, setUserID] = useState(`${randomNumberInRange(0, 10000)}`)
-  const [sessionID, setSessionID] = useState(`${randomNumberInRange(0, 10000)}`)
+  const [userID] = useState(`${randomNumberInRange(0, 10000)}`)
+  const [sessionID] = useState(`${randomNumberInRange(0, 10000)}`)
 
   const [selectedImage, setSelectedImage] = useState(null)
   const inputRef = useRef(null)
@@ -215,10 +299,15 @@ function App() {
             message,
             (response) => {
                 console.log(response)
-            });
-      });
+            })
+      })
       
-  };
+  }
+  
+  const removeImage = () => {
+    setSelectedImage(null)
+    inputRef.current.value = null
+  }
 
   const handleSubmit = (message) => {
     // if (!hasResponded) return // safety code
@@ -235,9 +324,7 @@ function App() {
     SendMessage(message, userID, sessionID, "", "", recieveMessage, selectedImage)
 
     // Set references to null
-    setSelectedImage(null)
-    inputRef.current.value = null
-    console.log('Hii!')
+    removeImage()
   }
 
   // Added new field to message and assumed 
@@ -247,8 +334,7 @@ function App() {
     
     const agent_message = {
       is_user : false,
-      provider_id : message.user_id == "iFetch" ? 
-        message.user_id : "user " + message.user_id,
+      provider_id : message.user_id == "iFetch" ? message.user_id : "user " + message.user_id,
       utterance : message.response,
       image : null,
       recommendations : message.recommendations == null ? [] : message.recommendations
@@ -292,26 +378,48 @@ function App() {
       console.log('Error: ', error);
     }
   }
-  
-  // TODO: Add icon of the selected image.
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+    },
+  });
+
+  const sx = { 
+    fontWeight: 'bold', 
+    fontFamily: 'Helvetica', 
+    p: 2, 
+    bgcolor:"background.paper", 
+    color:"text.primary" 
+  }
 
   return (
-    <div className='chat-container'>
-      <div className='title-container'>
-        <h1 className='message-content-bot'>iFetch</h1>
-      </div>
-      <View style={styles.container}>
+    <Paper variant="outlined" sx={{ boxShadow: 2 }} >
+      <ThemeProvider theme={darkTheme}>
+        <Paper >
+          <Typography variant="h5" 
+            sx={sx} >
+            iFetch
+          </Typography>
+        </Paper>
+      </ThemeProvider>
+      <View style={selectedImage ? styles.container_2 : styles.container}>
         <Messages messages={messages}/>
       </View>
-      <div className='form-container'>
-        <SendMessageForm handleSubmit = {handleSubmit}/>
-        <input ref = {inputRef} className= 'image-input' 
-          type='file' placeholder="Upload an Image" 
-          required onChange={selectFileHandler} text='Upload an Image'
-        />
-
-      </div>
-    </div>
+      <Divider variant="middle" />
+      {selectedImage ? 
+      <ImagePreview
+        removeCallback={removeImage}
+        image={selectedImage}
+      /> : 
+      <></>}
+      <Box sx={{ m: 1 }}>
+        <SendMessageForm handleSubmit = {handleSubmit}
+          selectFileHandler = {selectFileHandler}
+          isImageSelected = {selectedImage}
+          inputRef = {inputRef}/>
+      </Box>
+    </Paper>
   );
 }
 

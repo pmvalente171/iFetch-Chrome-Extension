@@ -3,11 +3,20 @@
   margin-left: 20px;
   margin-bottom: 10px;
   padding: 10px;
-  background-color: #2c2c2c;
-  width: 200px;
+  width: 220px;
   height: fit-content;
   text-align: left;
-  border: 1px solid #6d6d6d;
+  border-radius: 10px;
+}
+
+.message-bot-has-recommendations {
+  position: relative;
+  margin-left: 20px;
+  margin-bottom: 10px;
+  padding: 10px;
+  width: 240px;
+  height: fit-content;
+  text-align: left;
   border-radius: 10px;
 }
 
@@ -16,11 +25,9 @@
   margin-bottom: 10px;
   margin-left: calc(100% - 240px);
   padding: 10px;
-  background-color: #f8f8f8;
   width: 200px;
   height: fit-content;
   text-align: left;
-  border: 1px solid #828282;
   border-radius: 10px;
 }
 
@@ -41,7 +48,6 @@
 .message-timestamp-user {
   font-family: 'Helvetica', 'Arial', sans-serif;
   position: sticky;
-  font-size: .85em;
   font-weight: 300;
   bottom: 5px;
   left: 5px;
@@ -52,7 +58,6 @@
 .message-timestamp-bot {
   font-family: 'Helvetica', 'Arial', sans-serif;
   position: sticky;
-  font-size: .85em;
   font-weight: 300;
   bottom: 10px;
   left: 5px;
@@ -124,7 +129,7 @@
 
 .form-container {
   margin: 10px;
-  margin-right: 30px;
+  margin-right: 10px;
 }
 
 .title-container {

@@ -69,10 +69,9 @@ const cssContent = `
   position: fixed;
   bottom: 23px;
   right: 28px;
-  width: 404px;
+  width: 405px;
   height: 520px;
   z-index: 10;
-  background: white;
 `
 
 const myIFrame = `
@@ -80,6 +79,7 @@ const myIFrame = `
     style="
       width: inherit;
       height: inherit;
+      border-width: 0px !important;
     ">
   </iframe>
 `
